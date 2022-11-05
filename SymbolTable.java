@@ -40,6 +40,50 @@ public class SymbolTable<Key extends Comparable<Key>, Value>
     {
         return get(k) != null;
     }
+    
+    public Key floor(Key k)
+    {
+        return floor(root, k);
+    }
+    
+    private Key floor(Node parent, Key k)
+    {
+        if (parent == null) {return null;}
+        
+        int c = parent.k.compareTo(k);
+        if (c >= 0) {return floor(parent.left, k);}
+        if (c < 0) 
+        {
+            Key potentialK = floor(parent.right, k);
+            if (potentialK == null) {return parent.k;} //If not null, then this is best
+            return potentialK;
+        }
+        
+        return null;
+    }
+    
+    public Key ceiling(Key k)
+    {
+        return ceiling(root, k);
+    }
+    
+    private Key ceiling(Node parent, Key k)
+    {
+        if (parent == null) {return null;}
+        
+        int c = parent.k.compareTo(k);
+        if (c <= 0) {return floor(parent.right, k);}
+        if (c > 0) 
+        {
+            Key potentialK = floor(parent.left, k);
+            if (potentialK == null) {return parent.k;} //If not null, then this is best
+            return potentialK;
+        }
+        
+        return null;
+    }
+    
+    
     class Node 
     {
         Key k;
