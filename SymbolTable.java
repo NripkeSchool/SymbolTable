@@ -12,23 +12,25 @@ public class SymbolTable<Key extends Comparable<Key>, Value>
     {
         if (parent == null) {return null;}
         if (parent.k == k) {return parent;}
+        if (k.compareTo(parent.k) > 0) {return get(parent.right, k);}
         
-        if (k.compareTo(parent.k) > 0)
-        {
-            return get(parent.right, k);
-        }
         return get(parent.left, k);
     }
     
     public void put(Key k, Value v)
     {
-        Node n = new Node(k, v);
-        put(n, root);
+        root = put(root, k, v);
     }
     
-    private void put(Node newNode, Node parent)
+    private Node void put(Node parent, Key k, Value v)
     {
+        if (parent == null) {return new Node(k, v);}
+        int c = k.compareTo(parent.k);
         
+        if (c < 0) {parent.left = put(parent.left, k, v);}
+        if (c > 0) {parent.right = put(parent.right, k, v);}
+        
+        return parent;
     }
     
     public void remove(Key k)
@@ -51,7 +53,7 @@ public class SymbolTable<Key extends Comparable<Key>, Value>
         if (parent == null) {return null;}
         
         int c = parent.k.compareTo(k);
-        if (c >= 0) {return floor(parent.left, k);}
+        if (c > 0) {return floor(parent.left, k);}
         if (c < 0) 
         {
             Key potentialK = floor(parent.right, k);
@@ -59,7 +61,7 @@ public class SymbolTable<Key extends Comparable<Key>, Value>
             return potentialK;
         }
         
-        return null;
+        return parent;
     }
     
     public Key ceiling(Key k)
@@ -72,7 +74,7 @@ public class SymbolTable<Key extends Comparable<Key>, Value>
         if (parent == null) {return null;}
         
         int c = parent.k.compareTo(k);
-        if (c <= 0) {return floor(parent.right, k);}
+        if (c < 0) {return floor(parent.right, k);}
         if (c > 0) 
         {
             Key potentialK = floor(parent.left, k);
@@ -80,14 +82,39 @@ public class SymbolTable<Key extends Comparable<Key>, Value>
             return potentialK;
         }
         
-        return null;
+        return parent;
     }
     
+    public int size()
+    {
+        size(root);
+    }
     
+    private int size(Node n)
+    {
+        if (n == null) {return 0;}
+        return n.size;
+    }
+    
+    public Key select(int i)
+    {
+        return select(root, k);
+    }
+    
+    private Key select(Node parent, int i)
+    {
+        if (parent == null) {return null;}
+        int s = size(parent.left);
+        
+        if (s < i) {return select(parent.right, i-s-1);}
+        if (s > i) {return select(parent.left, i);}
+        return parent.key;
+    }
     class Node 
     {
         Key k;
         Value v;
+        int size;
         
         //Left/Right nodes
         Node left;
