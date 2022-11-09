@@ -27,8 +27,8 @@ public class SymbolTable<Key extends Comparable<Key>, Value>
         if (parent == null) {return new Node(k, v);}
         int c = k.compareTo(parent.k);
         
-        if (c < 0) {parent.left = put(parent.left, k, v);}
-        if (c > 0) {parent.right = put(parent.right, k, v);}
+        if (c < 0) {parent.size++; parent.left = put(parent.left, k, v);}
+        if (c > 0) {parent.size++; parent.right = put(parent.right, k, v);}
         
         return parent;
     }
@@ -110,7 +110,14 @@ public class SymbolTable<Key extends Comparable<Key>, Value>
         if (s > i) {return select(parent.left, i);}
         return parent.key;
     }
-    class Node 
+    
+    public int rank(Key k)
+    {
+        Node n = get(root, k);
+        return n == null ? -1 : size(n.left);
+    }
+    
+    private class Node 
     {
         Key k;
         Value v;
