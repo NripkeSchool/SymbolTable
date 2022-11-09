@@ -22,7 +22,7 @@ public class SymbolTable<Key extends Comparable<Key>, Value>
         root = put(root, k, v);
     }
     
-    private Node void put(Node parent, Key k, Value v)
+    private Node put(Node parent, Key k, Value v)
     {
         if (parent == null) {return new Node(k, v);}
         int c = k.compareTo(parent.k);
@@ -61,7 +61,7 @@ public class SymbolTable<Key extends Comparable<Key>, Value>
             return potentialK;
         }
         
-        return parent;
+        return parent.k;
     }
     
     public Key ceiling(Key k)
@@ -82,12 +82,12 @@ public class SymbolTable<Key extends Comparable<Key>, Value>
             return potentialK;
         }
         
-        return parent;
+        return parent.k;
     }
     
     public int size()
     {
-        size(root);
+        return size(root);
     }
     
     private int size(Node n)
@@ -108,7 +108,7 @@ public class SymbolTable<Key extends Comparable<Key>, Value>
         
         if (s < i) {return select(parent.right, i-s-1);}
         if (s > i) {return select(parent.left, i);}
-        return parent.key;
+        return parent.k;
     }
     
     public int rank(Key k)
