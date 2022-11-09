@@ -28,14 +28,31 @@ public class SymbolTable<Key extends Comparable<Key>, Value>
         int c = k.compareTo(parent.k);
         
         if (c < 0) {parent.size++; parent.left = put(parent.left, k, v);}
-        if (c > 0) {parent.size++; parent.right = put(parent.right, k, v);}
+        else if (c > 0) {parent.size++; parent.right = put(parent.right, k, v);}
+        else {parent.v = v;}
         
         return parent;
     }
     
-    public void remove(Key k)
+    public void delete(Key k)
     {
+        root = delete(root, k);
+    }
+    
+    private Node delete(Node parent, Key k)
+    {
+        if (parent == null) {return null;}
+        int c = parent.k.compareTo(k);
         
+        if (c < 0) {parent.left = delete(parent.left, k);}
+        else if (c > 0) {parent.right = delete(parent.right, k);}
+        else {
+            if (parent.right == null) {return parent.left;}
+            if (parent.left == null) {return parent.right;}
+            Node del = parent;
+            parent = min(del.right);
+            //x.right = delMin(del.right);
+        }
     }
     
     public boolean contains(Key k)
@@ -45,10 +62,10 @@ public class SymbolTable<Key extends Comparable<Key>, Value>
     
     public Key floor(Key k)
     {
-        return floor(root, k);
+        return floor(root, k).k;
     }
     
-    private Key floor(Node parent, Key k)
+    private Node floor(Node parent, Key k)
     {
         if (parent == null) {return null;}
         
@@ -56,33 +73,33 @@ public class SymbolTable<Key extends Comparable<Key>, Value>
         if (c > 0) {return floor(parent.left, k);}
         if (c < 0) 
         {
-            Key potentialK = floor(parent.right, k);
-            if (potentialK == null) {return parent.k;} //If not null, then this is best
+            Node potentialK = floor(parent.right, k);
+            if (potentialK == null) {return parent;} //If not null, then this is best
             return potentialK;
         }
         
-        return parent.k;
+        return parent;
     }
     
     public Key ceiling(Key k)
     {
-        return ceiling(root, k);
+        return ceiling(root, k).k;
     }
     
-    private Key ceiling(Node parent, Key k)
+    private Node ceiling(Node parent, Key k)
     {
         if (parent == null) {return null;}
         
         int c = parent.k.compareTo(k);
-        if (c < 0) {return floor(parent.right, k);}
+        if (c < 0) {return ceiling(parent.right, k);}
         if (c > 0) 
         {
-            Key potentialK = floor(parent.left, k);
-            if (potentialK == null) {return parent.k;} //If not null, then this is best
+            Node potentialK = ceiling(parent.left, k);
+            if (potentialK == null) {return parent;} //If not null, then this is best
             return potentialK;
         }
         
-        return parent.k;
+        return parent;
     }
     
     public int size()
@@ -98,23 +115,53 @@ public class SymbolTable<Key extends Comparable<Key>, Value>
     
     public Key select(int i)
     {
-        return select(root, i);
+        return select(root, i).k;
     }
     
-    private Key select(Node parent, int i)
+    private Node select(Node parent, int i)
     {
         if (parent == null) {return null;}
         int s = size(parent.left);
         
         if (s < i) {return select(parent.right, i-s-1);}
         if (s > i) {return select(parent.left, i);}
-        return parent.k;
+        return parent;
     }
     
     public int rank(Key k)
     {
-        Node n = get(root, k);
-        return n == null ? -1 : size(n.left);
+        return rank(root, k);
+    }
+    
+    private int rank(Node parent, Key k)
+    {
+        return 0;
+    }
+    
+    public Key min()
+    {
+        Node n = min(root);
+        return n == null ? null : n.k;
+    }
+    
+    private Node min(Node parent)
+    {
+        if (parent == null) {return null;}
+        if (parent.left == null) {return parent;}
+        return min(parent.left);
+    }
+    
+    public Key max()
+    {
+        Node n = max(root);
+        return n == null ? null : n.k;
+    }
+    
+    private Node max(Node parent)
+    {
+        if (parent == null) {return null;}
+        if (parent.right == null) {return parent;}
+        return max(parent.right);
     }
     
     private class Node 
