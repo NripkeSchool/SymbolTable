@@ -98,7 +98,7 @@ public class SymbolTable<Key extends Comparable<Key>, Value>
     
     public Key select(int i)
     {
-        return select(root, k);
+        return select(root, i);
     }
     
     private Key select(Node parent, int i)
