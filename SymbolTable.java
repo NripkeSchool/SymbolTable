@@ -44,16 +44,34 @@ public class SymbolTable<Key extends Comparable<Key>, Value>
         if (parent == null) {return null;}
         int c = parent.k.compareTo(k);
         
-        if (c < 0) {parent.left = delete(parent.left, k);}
-        else if (c > 0) {parent.right = delete(parent.right, k);}
+        if (c > 0) {parent.left = delete(parent.left, k);}
+        else if (c < 0) {parent.right = delete(parent.right, k);}
         else {
             if (parent.right == null) {return parent.left;}
             if (parent.left == null) {return parent.right;}
             Node del = parent;
             parent = min(del.right);
-            //x.right = delMin(del.right);
+            parent.right = deleteMin(del.right);
+            parent.left = del.left;
         }
-        return null;
+        parent.size = size(parent.left) + size(parent.right) + 1;
+        
+        return parent;
+    }
+    
+    public void deleteMin()
+    {
+        root = deleteMin(root);
+    }
+    
+    private Node deleteMin(Node parent)
+    {
+        if (parent == null) {return null;}
+        if (parent.left == null) {return parent.right;}
+        parent.left = deleteMin(parent.left);
+        parent.size = size(parent.left) + size(parent.right) + 1;//Might not work... test it out
+        
+        return parent;
     }
     
     public boolean contains(Key k)
@@ -174,7 +192,7 @@ public class SymbolTable<Key extends Comparable<Key>, Value>
     {
         Key k;
         Value v;
-        int size;
+        int size = 1;
         
         //Left/Right nodes
         Node left;
