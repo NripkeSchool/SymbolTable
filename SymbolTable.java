@@ -53,6 +53,7 @@ public class SymbolTable<Key extends Comparable<Key>, Value>
             parent = min(del.right);
             //x.right = delMin(del.right);
         }
+        return null;
     }
     
     public boolean contains(Key k)
@@ -135,7 +136,12 @@ public class SymbolTable<Key extends Comparable<Key>, Value>
     
     private int rank(Node parent, Key k)
     {
-        return 0;
+        if (parent == null) {return 0;}
+        int c = parent.k.compareTo(k);
+        
+        if (c > 0) {return rank(parent.left, k);}
+        if (c < 0) {return 1+size(parent.left)+rank(parent.right, k);}
+        return size(parent.left);
     }
     
     public Key min()
