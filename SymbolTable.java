@@ -1,6 +1,30 @@
 public class SymbolTable<Key extends Comparable<Key>, Value>
 {
     Node root;
+    public Iterable<Key> keys() 
+    {
+        return keys(min(), max());
+    }
+    
+    public Iterable<Key> keys(Key min, Key max) 
+    {
+        ArrayList<Key> q = new AraryList<Key>();
+        keys(root, q, min, max);
+        return q;
+    }
+    
+    private void keys(Node parent, ArrayList<Key> q, Key min, Key max)
+    {
+        if (parent == null) {return;}
+        
+        int cmin = min.compareTo(parent.k);
+        int cmax = max.compareTo(parent.k);
+        
+        if (cmin < 0) {keys(parent.left, q, min, max);}
+        if (cmin <= 0 && cmax >= 0) {q.add(parent.key);}
+        if (cmax > 0) {keys(parent.right, q, min, max);}
+    }
+    
     public Value get(Key k)
     {
         Node n = get(root, k);
