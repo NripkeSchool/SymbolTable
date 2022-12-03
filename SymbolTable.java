@@ -8,7 +8,7 @@ public class SymbolTable<Key extends Comparable<Key>, Value>
     
     public Iterable<Key> keys(Key min, Key max) 
     {
-        ArrayList<Key> q = new AraryList<Key>();
+        ArrayList<Key> q = new ArrayList<Key>();
         keys(root, q, min, max);
         return q;
     }
